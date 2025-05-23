@@ -198,8 +198,51 @@ export default function Home() {
             <MiniCalendar />
           </div>
         </div>
-        <div className="w-full flex gap-4 h-[60%]">
-          <div className="w-[60%] h-full bg-[#181818] rounded-xl"></div>
+        <div className="w-full flex gap-x-4 h-[60%]">
+          <div className="w-[60%] h-full bg-[#181818] rounded-xl p-6 gap-4 flex flex-col">
+            <span className='text-xl font-semibold mb-6'>Transactions</span>
+
+            <div className='flex justify-between '>
+              <div className='flex flex-col'>
+                <span className='text-md'>Spotify</span>
+                <span className='text-xs text-gray-500'>April 18, 2022 11:01 AM</span>
+                </div>
+                <span className='text-xl font-bold text-green-500'>$400</span>
+            </div>
+
+            <div className='flex justify-between '>
+              <div className='flex flex-col'>
+                <span className='text-md'>Spotify</span>
+                <span className='text-xs text-gray-500'>April 18, 2022 11:01 AM</span>
+                </div>
+                <span className='text-xl font-bold text-green-500'>$400</span>
+            </div>
+
+            <div className='flex justify-between '>
+              <div className='flex flex-col'>
+                <span className='text-md'>Spotify</span>
+                <span className='text-xs text-gray-500'>April 18, 2022 11:01 AM</span>
+                </div>
+                <span className='text-xl font-bold text-green-500'>$400</span>
+            </div>
+
+            <div className='flex justify-between '>
+              <div className='flex flex-col'>
+                <span className='text-md'>Spotify</span>
+                <span className='text-xs text-gray-500'>April 18, 2022 11:01 AM</span>
+                </div>
+                <span className='text-xl font-bold text-green-500'>$400</span>
+            </div>
+
+             <div className='flex justify-between '>
+              <div className='flex flex-col'>
+                <span className='text-md'>Spotify</span>
+                <span className='text-xs text-gray-500'>April 18, 2022 11:01 AM</span>
+                </div>
+                <span className='text-xl font-bold text-green-500'>$400</span>
+            </div>
+
+          </div>
           <div className="flex flex-col w-[40%] h-full gap-4">
             <div className="w-full h-[60%] bg-[#181818] rounded-xl p-3">
               <canvas className="w-full h-full" style={{ display: 'block' }} ref={donutChartRef} />
