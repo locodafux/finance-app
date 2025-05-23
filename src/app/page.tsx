@@ -47,52 +47,52 @@ const MiniCalendar = () => {
     1
   ).getDay();
 
-  // Generate calendar grid
-  const weeks = [];
-  let week = [];
+  // Generate calendar rows
+  const rows = [];
+  let days = [];
   
   // Add empty cells for days before the 1st of the month
   for (let i = 0; i < firstDayOfMonth; i++) {
-    week.push(<div key={`empty-${i}`} className="w-6 h-6"></div>);
+    days.push(<td key={`empty-${i}`} className="h-8"></td>);
   }
   
   // Add days of the month
   for (let day = 1; day <= daysInMonth; day++) {
     const isToday = day === currentDate.getDate();
     
-    week.push(
-      <div 
+    days.push(
+      <td
         key={`day-${day}`}
-        className={`w-6 h-6 flex items-center justify-center text-xs rounded-full
-          ${isToday ? 'bg-green-500 text-white' : 'hover:bg-gray-700'}`}
+        className={`h-8 text-center text-xs p-1
+          ${isToday ? 'bg-green-500 text-white rounded-full' : 'hover:bg-gray-700'}`}
       >
         {day}
-      </div>
+      </td>
     );
     
-    if (week.length === 7 || day === daysInMonth) {
-      weeks.push(
-        <div key={`week-${day}`} className="flex justify-between mb-1">
-          {week}
-        </div>
-      );
-      week = [];
+    if (days.length === 7 || day === daysInMonth) {
+      rows.push(<tr key={`week-${day}`}>{days}</tr>);
+      days = [];
     }
   }
 
   return (
-    <div className="text-white">
+    <div className="text-white h-full flex flex-col">
       <div className="text-center font-medium mb-2">
         {currentMonth} {currentYear}
       </div>
-      <div className="flex justify-between text-xs text-gray-400 mb-1">
-        {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
-          <div key={day} className="w-6 text-center">{day}</div>
-        ))}
-      </div>
-      <div className="flex flex-col">
-        {weeks}
-      </div>
+      <table className="w-full h-full table-fixed">
+        <thead>
+          <tr className="text-xs text-gray-400">
+            {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
+              <th key={day} className="pb-1">{day}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="[&>tr]:h-[calc(100%/6)]">
+          {rows}
+        </tbody>
+      </table>
     </div>
   );
 };
