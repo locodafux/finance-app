@@ -11,8 +11,8 @@ import {
   Title,
   Tooltip,
   Legend,
-  DoughnutController, // added for donut
-  ArcElement,         // added for donut
+  DoughnutController,
+  ArcElement,
 } from 'chart.js';
 
 Chart.register(
@@ -27,6 +27,75 @@ Chart.register(
   DoughnutController, 
   ArcElement         
 );
+
+const MiniCalendar = () => {
+  const currentDate = new Date();
+  const currentMonth = currentDate.toLocaleString('default', { month: 'short' });
+  const currentYear = currentDate.getFullYear();
+  
+  // Get days in month
+  const daysInMonth = new Date(
+    currentDate.getFullYear(), 
+    currentDate.getMonth() + 1, 
+    0
+  ).getDate();
+  
+  // Get first day of month (0-6 where 0 is Sunday)
+  const firstDayOfMonth = new Date(
+    currentDate.getFullYear(), 
+    currentDate.getMonth(), 
+    1
+  ).getDay();
+
+  // Generate calendar grid
+  const weeks = [];
+  let week = [];
+  
+  // Add empty cells for days before the 1st of the month
+  for (let i = 0; i < firstDayOfMonth; i++) {
+    week.push(<div key={`empty-${i}`} className="w-6 h-6"></div>);
+  }
+  
+  // Add days of the month
+  for (let day = 1; day <= daysInMonth; day++) {
+    const isToday = day === currentDate.getDate();
+    
+    week.push(
+      <div 
+        key={`day-${day}`}
+        className={`w-6 h-6 flex items-center justify-center text-xs rounded-full
+          ${isToday ? 'bg-green-500 text-white' : 'hover:bg-gray-700'}`}
+      >
+        {day}
+      </div>
+    );
+    
+    if (week.length === 7 || day === daysInMonth) {
+      weeks.push(
+        <div key={`week-${day}`} className="flex justify-between mb-1">
+          {week}
+        </div>
+      );
+      week = [];
+    }
+  }
+
+  return (
+    <div className="text-white">
+      <div className="text-center font-medium mb-2">
+        {currentMonth} {currentYear}
+      </div>
+      <div className="flex justify-between text-xs text-gray-400 mb-1">
+        {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
+          <div key={day} className="w-6 text-center">{day}</div>
+        ))}
+      </div>
+      <div className="flex flex-col">
+        {weeks}
+      </div>
+    </div>
+  );
+};
 
 export default function Home() {
   const chartRef = useRef<HTMLCanvasElement>(null);
@@ -118,7 +187,7 @@ export default function Home() {
       <h1 className="text-4xl mb-2">
         <span className="font-bold">Good morning,</span> Jane Doe!
       </h1>
-      <h3 className="text-2xl mb-3">Welcome Back</h3>
+      <h3 className="text-2xl mb-6">Welcome Back</h3>
 
       <div className="flex flex-col lg:w-[60%] lg:h-full gap-y-4">
         <div className="w-full flex gap-4 h-[40%]">
@@ -126,14 +195,14 @@ export default function Home() {
             <canvas className="w-full h-full" style={{ display: 'block' }} ref={chartRef} />
           </div>
           <div className="w-[40%] h-full bg-[#181818] rounded-xl p-4">
+            <MiniCalendar />
           </div>
         </div>
         <div className="w-full flex gap-4 h-[60%]">
           <div className="w-[60%] h-full bg-[#181818] rounded-xl"></div>
           <div className="flex flex-col w-[40%] h-full gap-4">
             <div className="w-full h-[60%] bg-[#181818] rounded-xl p-3">
-          <canvas className="w-full h-full" style={{ display: 'block' }} ref={donutChartRef} />
-
+              <canvas className="w-full h-full" style={{ display: 'block' }} ref={donutChartRef} />
             </div>
             <div className="w-full h-[40%] bg-[#181818] rounded-xl flex flex-col gap-2 p-4">
               <span className='text-sm text-gray-500'>Total Balance</span>
