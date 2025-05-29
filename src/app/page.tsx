@@ -11,8 +11,8 @@ import {
   Title,
   Tooltip,
   Legend,
-  DoughnutController,
   ArcElement,
+  DoughnutController,
 } from 'chart.js';
 
 Chart.register(
@@ -24,53 +24,39 @@ Chart.register(
   Title,
   Tooltip,
   Legend,
-  DoughnutController, 
-  ArcElement         
+  ArcElement,
+  DoughnutController
 );
 
 const MiniCalendar = () => {
   const currentDate = new Date();
   const currentMonth = currentDate.toLocaleString('default', { month: 'short' });
   const currentYear = currentDate.getFullYear();
-  
-  // Get days in month
-  const daysInMonth = new Date(
-    currentDate.getFullYear(), 
-    currentDate.getMonth() + 1, 
-    0
-  ).getDate();
-  
-  // Get first day of month (0-6 where 0 is Sunday)
-  const firstDayOfMonth = new Date(
-    currentDate.getFullYear(), 
-    currentDate.getMonth(), 
-    1
-  ).getDay();
+  const daysInMonth = new Date(currentYear, currentDate.getMonth() + 1, 0).getDate();
+  const firstDayOfMonth = new Date(currentYear, currentDate.getMonth(), 1).getDay();
 
-  // Generate calendar rows
   const rows = [];
   let days = [];
-  
-  // Add empty cells for days before the 1st of the month
+
   for (let i = 0; i < firstDayOfMonth; i++) {
     days.push(<td key={`empty-${i}`} className="h-8"></td>);
   }
-  
-  // Add days of the month
+
   for (let day = 1; day <= daysInMonth; day++) {
     const isToday = day === currentDate.getDate();
-    
+
     days.push(
       <td
         key={`day-${day}`}
-        className={`h-8 text-center text-xs p-1
-          ${isToday ? 'bg-green-500 text-white rounded-full' : 'hover:bg-gray-700'}`}
+        className={`h-8 text-center text-xs p-1 ${
+          isToday ? 'bg-green-500 text-white rounded-full' : 'hover:bg-gray-700'
+        }`}
       >
         {day}
       </td>
     );
-    
-    if (days.length === 7 || day === daysInMonth) {
+
+    if ((firstDayOfMonth + day) % 7 === 0 || day === daysInMonth) {
       rows.push(<tr key={`week-${day}`}>{days}</tr>);
       days = [];
     }
@@ -85,13 +71,13 @@ const MiniCalendar = () => {
         <thead>
           <tr className="text-xs text-gray-400">
             {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
-              <th key={day} className="pb-1">{day}</th>
+              <th key={day} className="pb-1">
+                {day}
+              </th>
             ))}
           </tr>
         </thead>
-        <tbody className="[&>tr]:h-[calc(100%/6)]">
-          {rows}
-        </tbody>
+        <tbody className="[&>tr]:h-[calc(100%/6)]">{rows}</tbody>
       </table>
     </div>
   );
@@ -99,9 +85,9 @@ const MiniCalendar = () => {
 
 export default function Home() {
   const chartRef = useRef<HTMLCanvasElement>(null);
-  const donutChartRef = useRef<HTMLCanvasElement>(null);       
+  const donutChartRef = useRef<HTMLCanvasElement>(null);
   const chartInstanceRef = useRef<Chart | null>(null);
-  const donutChartInstanceRef = useRef<Chart | null>(null);   
+  const donutChartInstanceRef = useRef<Chart | null>(null);
 
   useEffect(() => {
     if (chartRef.current) {
@@ -116,7 +102,7 @@ export default function Home() {
               borderColor: 'green',
               backgroundColor: 'rgba(75, 192, 75, 0.2)',
               fill: false,
-              tension: 0,
+              tension: 0.4,
             },
             {
               label: 'Expenses',
@@ -124,7 +110,7 @@ export default function Home() {
               borderColor: 'rgb(255, 99, 132)',
               backgroundColor: 'rgba(255, 99, 132, 0.2)',
               fill: false,
-              tension: 0,
+              tension: 0.4,
             },
           ],
         },
@@ -132,7 +118,9 @@ export default function Home() {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { labels: { color: 'white' } },
+            legend: {
+              labels: { color: 'white' },
+            },
           },
           scales: {
             x: {
@@ -157,12 +145,9 @@ export default function Home() {
             {
               label: 'Income vs. Expenses',
               data: [300, 100],
-              backgroundColor: [
-                'rgb(255, 99, 132)',
-                'green',
-              ],
+              backgroundColor: ['rgb(255, 99, 132)', 'green'],
               hoverOffset: 30,
-              borderWidth: 0, 
+              borderWidth: 0,
             },
           ],
         },
@@ -170,7 +155,10 @@ export default function Home() {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { labels: { color: 'white' }, position: 'top'},
+            legend: {
+              labels: { color: 'white' },
+              position: 'top',
+            },
           },
         },
       });
@@ -183,74 +171,46 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="w-screen h-screen flex items-center flex-col p-24 bg-black text-white">
-      <h1 className="text-4xl mb-2">
+    <div className="w-full min-h-screen p-6 bg-black text-white flex flex-col items-center">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl mb-1 text-center">
         <span className="font-bold">Good morning,</span> Jane Doe!
       </h1>
-      <h3 className="text-2xl mb-6">Welcome Back</h3>
+      <h3 className="text-lg sm:text-xl mb-4 text-center">Welcome Back</h3>
 
-      <div className="flex flex-col lg:w-[60%] lg:h-full gap-y-4">
-        <div className="w-full flex gap-4 h-[40%]">
-          <div className="w-[60%] h-full bg-[#181818] rounded-xl p-4">
-            <canvas className="w-full h-full" style={{ display: 'block' }} ref={chartRef} />
+      <div className="w-full max-w-6xl flex flex-col gap-4">
+        {/* Top Section */}
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="w-full lg:w-3/5 h-64 sm:h-80 bg-[#181818] rounded-xl p-4">
+            <canvas className="w-full h-full" ref={chartRef} />
           </div>
-          <div className="w-[40%] h-full bg-[#181818] rounded-xl p-4">
+          <div className="w-full lg:w-2/5 h-64 sm:h-80 bg-[#181818] rounded-xl p-4">
             <MiniCalendar />
           </div>
         </div>
-        <div className="w-full flex gap-x-4 h-[60%]">
-          <div className="w-[60%] h-full bg-[#181818] rounded-xl p-6 gap-4 flex flex-col">
-            <span className='text-xl font-semibold mb-6'>Transactions</span>
 
-            <div className='flex justify-between '>
-              <div className='flex flex-col'>
-                <span className='text-md'>Spotify</span>
-                <span className='text-xs text-gray-500'>April 18, 2022 11:01 AM</span>
+        {/* Bottom Section */}
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="w-full lg:w-3/5 bg-[#181818] rounded-xl p-4 flex flex-col gap-4 max-h-[400px] overflow-y-auto">
+            <span className="text-xl font-semibold">Transactions</span>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex justify-between items-center">
+                <div className="flex flex-col">
+                  <span className="text-md">Spotify</span>
+                  <span className="text-xs text-gray-500">April 18, 2022 11:01 AM</span>
                 </div>
-                <span className='text-xl font-bold text-green-500'>$400</span>
-            </div>
-
-            <div className='flex justify-between '>
-              <div className='flex flex-col'>
-                <span className='text-md'>Spotify</span>
-                <span className='text-xs text-gray-500'>April 18, 2022 11:01 AM</span>
-                </div>
-                <span className='text-xl font-bold text-green-500'>$400</span>
-            </div>
-
-            <div className='flex justify-between '>
-              <div className='flex flex-col'>
-                <span className='text-md'>Spotify</span>
-                <span className='text-xs text-gray-500'>April 18, 2022 11:01 AM</span>
-                </div>
-                <span className='text-xl font-bold text-green-500'>$400</span>
-            </div>
-
-            <div className='flex justify-between '>
-              <div className='flex flex-col'>
-                <span className='text-md'>Spotify</span>
-                <span className='text-xs text-gray-500'>April 18, 2022 11:01 AM</span>
-                </div>
-                <span className='text-xl font-bold text-green-500'>$400</span>
-            </div>
-
-             <div className='flex justify-between '>
-              <div className='flex flex-col'>
-                <span className='text-md'>Spotify</span>
-                <span className='text-xs text-gray-500'>April 18, 2022 11:01 AM</span>
-                </div>
-                <span className='text-xl font-bold text-green-500'>$400</span>
-            </div>
-
+                <span className="text-xl font-bold text-green-500">$400</span>
+              </div>
+            ))}
           </div>
-          <div className="flex flex-col w-[40%] h-full gap-4">
-            <div className="w-full h-[60%] bg-[#181818] rounded-xl p-3">
-              <canvas className="w-full h-full" style={{ display: 'block' }} ref={donutChartRef} />
+
+          <div className="w-full lg:w-2/5 flex flex-col gap-4">
+            <div className="w-full h-64 bg-[#181818] rounded-xl p-4">
+              <canvas className="w-full h-full" ref={donutChartRef} />
             </div>
-            <div className="w-full h-[40%] bg-[#181818] rounded-xl flex flex-col gap-2 p-4">
-              <span className='text-sm text-gray-500'>Total Balance</span>
-              <span className='text-2xl font-bold'>$7,540.00</span>
-              <span className='text-green-400'>+8.00%</span>
+            <div className="w-full bg-[#181818] rounded-xl p-4 flex flex-col gap-2">
+              <span className="text-sm text-gray-500">Total Balance</span>
+              <span className="text-2xl font-bold">$7,540.00</span>
+              <span className="text-green-400">+8.00%</span>
             </div>
           </div>
         </div>
